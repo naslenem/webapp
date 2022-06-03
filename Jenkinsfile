@@ -21,7 +21,7 @@ pipeline {
           stage("Code coverage") {
                steps {
                     script {
-                    sh 'coverage report --data-file=cov.xml'
+                    sh 'coverage run --data-file="cov.xml" manage.py test'
                     publishHTML (target: [
                     	reportDir: '.',
                     	reportFiles: 'cov.xml',
