@@ -1,1 +1,1 @@
-echo "COOL"
+echo "COOLz"
