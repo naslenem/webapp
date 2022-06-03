@@ -21,7 +21,7 @@ pipeline {
           stage("Code coverage") {
                steps {
                     script {
-                    sh 'python3 manage.py test -v 2'
+                    sh 'coverage run manage.py test -v 1 && coverage report'
                     step([$class: 'CoberturaPublisher', 
                         coberturaReportFile: "cov.xml",
                     ])
