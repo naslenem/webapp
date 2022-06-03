@@ -22,6 +22,7 @@ pipeline {
                         coberturaReportFile: "cov.xml",
                     ])
                     junit "pyunit.xml"
+                    }
                }
           }
     }
