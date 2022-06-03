@@ -1,7 +1,7 @@
 pipeline {
      agent {
           docker {
-               image: python-image:3
+               image: "python-image:3"
      	}
      }
      triggers {
