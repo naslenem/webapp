@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy Bypass -File python.ps1

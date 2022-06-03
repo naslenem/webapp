@@ -1,0 +1,126 @@
+{% extends 'stockmarket/base.html' %}
+{% block title %}{{ album }}{% endblock %}
+{% block albums_active %}active{% endblock %}
+
+{% block body %}
+{% load static %}
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>{{ album.name }} <small>{{ album.countrycode }}
+                        {% if user.is_authenticated %}
+                            <!-- Favorite Album -->
+                                <a href="{% url 'stockmarket:favorite' album.id %}" class="btn-favorite">
+                                {% if album.is_favorite %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                {% endif %}
+                                </a>
+                        {% endif %}</small></h1>
+                    <h2>{{ album.price }}
+                        <small>
+                    
+                    <span style="{% if album.point_q > 0 %}color:green{% else %}color:red{% endif %}" class="{% if album.point_q > 0 %}glyphicon glyphicon-arrow-up{% else %}glyphicon glyphicon-arrow-down{% endif %}"></span>
+                    {{ album.point_q}}
+                        </small>
+
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-8 col-md-9">
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>Info</h3>
+
+                    <table class="table table-dark">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Price</th>
+                            <th>Difference</th>
+                            <th>Day lowest</th>
+                            <th>Day highest</th>
+                            <th>P/E ratio</th>
+                        </tr>
+                        </thead>    
+                        <thead>
+                            <tr>
+                                <th>{{ album.price }}</th>
+                                <th>{{ album.point_q }}</th>
+                                <th>{{ album.day_lowest }}</th>
+                                <th>{{ album.day_highest }}</th>
+                                <th>
+                                    {% if album.p_e == 0 %}
+                                        N/A
+                                    {% else %}
+                                        {{ album.p_e }}
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        </thead>
+                        <thead>
+                        <tr>
+                            <th>Market cap</th>
+                            <th>Public float</th>
+                            <th>EPS</th>
+                            <th>Dividend</th>
+                        </tr>
+                        </thead>    
+                        <thead>
+                            <tr>
+                                <th>{{ album.market_cap }}</th>
+                                <th>{{ album.public_float }}</th>
+                                <th>{{ album.eps }}</th>
+                                <th>
+                                    {% if album.dividend == 0 %}
+                                        N/A
+                                    {% else %}
+                                        {{ album.dividend }}
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        </thead>
+                        <thead>
+                            <tr>
+
+                            </tr>
+                        </thead>
+                    </table>
+                    {% if user.is_authenticated %}
+                        <form class="form-horizontal"  role="form" method="post" enctype="multipart/form-data" action="{% url 'stockmarket:buy_stock' album.id %}">
+                            {% csrf_token %}
+                            <input id="stocks_number" maxlength="30" name="stocks_number" type="number" min="1" max="{{ stock_owned.amount }}" placeholder="Number of stocks" required='required'>
+                            <button class="btn btn-info btn-sm" role="button">Buy</button>
+                        </form>
+                        Owned: <b>{{ owned_stocks }}</b>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+        {% if code == 200 %}
+        <div class="panel panel-default">
+            <center><img src="data:image/png;base64, {{graph|safe}}" class="img-responsive" alt="Chart"/></center>
+        </div>
+        {% endif %}
+</div>
+{% if code != 200 %}
+    <script>
+        alert('{{ code }}');
+    </script>
+{% endif %}
+
+{% endblock %}

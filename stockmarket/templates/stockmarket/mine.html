@@ -1,0 +1,243 @@
+{% extends 'stockmarket/base.html' %}
+{% block albums_active %}active{% endblock %}
+
+
+
+{% block body %}
+
+
+
+<div class="albums-container container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-heading panel-default">
+            <center><h3>
+                <p class="text-info" style="font-size:30px;font-family:tahoma"><span class="glyphicon glyphicon-user"></span> {{user.username}}'s Account</p></h3></center>
+
+        </div>
+        <li class="nav-item">
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1><span style="{% if account.balance > 0 %}color:green{% else %}color:red{% endif %}">{{ account.balance }} <small>PLN</small></h1>
+                    Total Stocks owned: <b>{{ no_stocks_owned }}</b>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Recent Transactions</h3>
+                     <table class="table table-condensed">
+                         <thead class="thead-dark">
+                     <tr>
+                         <th>Stock</th>
+                         <th>Amount</th>
+                         <th>Price</th>
+                     </tr>
+
+                    </thead>
+                        {% for transaction in recenttransactions %}
+                            <thead>
+                                <tr>
+                                    <th>{{ transaction.stock.name }}</th>
+                                    <th>{{ transaction.numberofstocks }}</th>
+                                    <th>
+                                    {% if transaction.transactiontype == 'sell' %}
+                                        <span style=color:green>{{ transaction.amount }}
+                                            {% else %}
+                                            <span style=color:red>-{{ transaction.amount }}
+                                                {% endif %}
+                                    </th>
+                                </tr>
+                            </thead>
+                        {% endfor %}
+                     </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8 col-md-9">
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>Stocks owned</h3>
+
+                    <table class="table table-dark">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>#owned</th>
+                            <th>cost per unit</th>
+                            <th>total worth</th>
+                            <th>View</th>
+                            <th>Sell</th>
+                        </tr>
+                        </thead>
+                        {% for stock_owned in user_stocks %}
+                            <thead>
+                                <tr>
+                                    <th>{{ stock_owned.stock.name }}</th>
+                                    <th>{{ stock_owned.amount }}</th>
+                                    <th>{{ stock_owned.stock.price }} PLN</th>
+                                    <th>{{ stock_owned.total }} PLN</th>
+                                    <th><a href="{% url 'stockmarket:detail' stock_owned.stock.id %}" class="btn btn-info btn-sm" role="button">View Details</a>
+                                        <a href="{% url 'stockmarket:favorite' stock_owned.stock.id %}" class="btn-favorite">
+                                        {% if stock_owned.stock.is_favorite %}
+                                            <span class="glyphicon glyphicon-star"></span>
+                                        {% else %}
+                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="{% url 'stockmarket:sell_stock' stock_owned.stock.id %}">
+                                            {% csrf_token %}
+                                            <input id="stocks_number" maxlength="30" name="stocks_number" type="number" min="1" max="{{ stock_owned.amount }}" placeholder="Number of stocks" required='required'>
+                                            <button class="btn btn-info btn-sm" role="button">Sell</button>
+                                        </form>
+                                    </th>
+                                </tr>
+                            </thead>
+                        {% endfor %}
+                            <thead>
+                                <tr>
+                                    <th><p style="color:grey;font-size:16px">Total.</p></th>
+                                    <th><p style="color:grey;font-size:16px">{{ no_stocks_owned }}</p></th>
+                                    <th><p style="color:green;font-size:16px">{{ cost_per_units }} PLN</p></th>
+                                    <th><p style="color:green;font-size:16px">{{ price_total }} PLN</p></th>
+                                </tr>
+                            </thead>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-custom">
+            <center><h3>
+                <p class="text-info" style="font-size:30px;font-family:tahoma"><span class="glyphicon glyphicon-file"></span> Your favorite Stocks</p></h3></center>
+
+        </div>
+        <li class="nav-item">
+        </li>
+    </div>
+
+    <!-- Albums -->
+    <div class="row">
+        {% if albums %}
+            {% for album in albums %}
+                <div class="col-md-4 col-xl-4">
+                    <div class="thumbnail">
+                        <a href="{% url 'stockmarket:detail' album.id %}">
+                        </a>
+                        <div class="caption">
+                            <h2>{{ album.name }}</h2>
+                            <h4>({{ album.symbol }})</h4>
+
+                            <!-- View Details -->
+                            <a href="{% url 'stockmarket:detail' album.id %}" class="btn btn-info btn-sm" role="button">View Details</a>
+
+
+                            <!-- Favorite Album -->
+                            <a href="{% url 'stockmarket:favorite' album.id %}" class="btn-favorite">
+
+                                <span class="glyphicon glyphicon-star"></span>
+                            </a>
+
+                        </div>
+                         <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Price</th>
+                                    <th>Difference</th>
+                                    <th>Day lowest</th>
+                                    <th>Day highest</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>{{ album.price }}</th>
+                                    <th>{{ album.point_q }}</th>
+                                    <th>{{ album.day_lowest }}</th>
+                                    <th>{{ album.day_highest }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-sm-12">
+                <br>
+                <a href="{% url 'stockmarket:index' %}">
+                    <button type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+        <div class="panel panel-default">
+            <div class="panel-heading panel-heading-custom">
+                <center><h3>
+                    <p class="text-info" style="font-size:30px;font-family:tahoma"><span class="glyphicon glyphicon-tasks"></span> All Transactions</p></h3></center>
+
+            </div>
+            <li class="nav-item">
+            </li>
+        </div>
+
+
+
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table table-dark">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Stock</th>
+                            <th>Operation</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        {% for transaction in alltransactions %}
+                        <thead>
+                            <tr>
+                                <th>{{ transaction.stock.name }}</th>
+                                <th>
+                                    {% if transaction.transactiontype == 'sell' %}
+                                        <span style=color:green>{{ transaction.transactiontype }}
+                                    {% else %}
+                                        <span style=color:blue>{{ transaction.transactiontype }}
+                                    {% endif %}</th>
+                                <th>{{ transaction.numberofstocks }}</th>
+                                <th>
+                                    {% if transaction.transactiontype == 'sell' %}
+                                        <span style=color:green>{{ transaction.amount }} PLN
+                                    {% else %}
+                                        <span style=color:red>-{{ transaction.amount }} PLN
+                                    {% endif %}
+                                </th>
+                                <th>{{ transaction.date }}</th>
+                            </tr>
+                        </thead>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

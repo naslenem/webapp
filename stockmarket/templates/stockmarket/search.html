@@ -1,0 +1,84 @@
+{% extends 'stockmarket/base.html' %}
+{% block albums_active %}active{% endblock %}
+
+{% block body %}
+
+<style>
+.panel-default > .panel-heading-custom {
+background: #202327; }
+
+.btn-info {
+color: #fff;
+background-color: #202327;
+border-color: #202327;}
+</style>
+
+<div class=".justify-content-md-center">
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-custom">
+            <center><h3>
+                <p class="text-info" style="font-size:30px;font-family:tahoma"><span class="glyphicon glyphicon-search"></span> Search for Stock</p></h3></center>
+
+        </div>
+        <li class="nav-item">
+            <form class="form-inline" method="POST" action="{% url 'stockmarket:search' %}">
+                {% csrf_token %}
+                <center>
+                <input class="form-control me-2" type="search" placeholder="Stock name" aria-label="Search" name="searched">
+                <button class="btn btn-info" style="font-family:tahoma" type="submit">Search</button>
+                </center>
+            </form>
+            {% if no_alb %}
+            Found <b>{{ no_alb }}</b> Stocks.
+            {% else %}
+            Nothing has been found so far.
+            {% endif %}
+        </li>
+    </div>
+    <div class="row">
+
+        {% if albums %}
+            {% for album in albums %}
+                <div class="col-md-4 col-xl-4">
+                    <div class="thumbnail">
+                        <a href="{% url 'stockmarket:detail' album.id %}">
+                        </a>
+                        <div class="caption">
+                            <h2>{{ album.name }}</h2>
+                            <h4>({{ album.symbol }})</h4>
+
+                            <!-- View Details -->
+                            <a href="{% url 'stockmarket:detail' album.id %}" class="btn btn-info btn-sm" role="button">View Details</a>
+                        </div>
+                         <table class="table table-sm table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Price</th>
+                                    <th>Difference</th>
+                                    <th>Day lowest</th>
+                                    <th>Day highest</th>
+                                    <!-- <th>P/E ratio</th> -->
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>{{ album.price }}</th>
+                                    <th>{{ album.point_q }}</th>
+                                    <th>{{ album.day_lowest }}</th>
+                                    <th>{{ album.day_highest }}</th>
+                                    <!-- <th>{{ album.p_e }}</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+</div>
+{% endblock %}
+</div>

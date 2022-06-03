@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+	<title>{% block title %}Stocks{% endblock %}</title>
+	{% load static %}
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="{% static  'stockmarket/style.css' %}" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <meta http-equiv="content-language" content="en">
+    <meta name="google=site-verification" content="fk-&17&+6n0%(vd_(a5z57v1d3-suzg4*c5d9et_vb)4ev7gm@">
+    <meta name="description" content="Stock Market personally adjustable by you. Add content that interests you without filtering all the stocks that you don't find interesting">
+    <meta name="robots" content="all">
+    <meta name="copyright" content="Bogdan Urynowicz">
+    <meta name="keywords" lang="en" content="Stocks, PLN, Django, Python, Market, Stock, personal, adjustable, flexible, Stock analysis, Stock market, sqlite3, Dollar, business">
+    <meta name="keywords" lang="en" content="Stock market, sqlite3, panda3, gielda, market, bitcoin, akcje, analiza rynku, wzrost, popyt, podaz, notowania, kup, kupno, biznes, PLN, Django, Python, Market, Stock, personal, adjustable, flexible, Stock analysis, Dollar">
+    <meta name="date" content="2021-02-14">
+    <meta name="classification" content="Business, Stocks">
+    <meta name="audience" content="Students, Economy researcher, Economists, Businesman, Trader, Investor">
+
+
+
+
+
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse" style="background-color: #202327;">
+    <div class="container-field">
+        <!-- Header -->
+        <div class="navbar-header">
+
+            <a class="navbar-brand" href="{% url 'stockmarket:index' %}">Stock Market</a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="">
+                    <a href="{% url 'stockmarket:index' %}">
+                        <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Stocks
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'stockmarket:search' %}">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="">
+                    <a href="{% url 'stockmarket:mine' %}">
+                        <span class=" glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; {{ user.username }}
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+
+            <ul class="nav navbar-nav navbar-right">
+            {% if user.is_superuser %}
+            <li class="">
+                <button type="button" class="btn btn-secondary btn-lg">                   
+                    <a href="{% url 'stockmarket:refresh_databse' %}" ><span class="glyphicon glyphicon-repeat"></span> Refresh Database</a>
+                </button>
+            </li>
+            <li class="">
+                <button type="button" class="btn btn-warning btn-lg">                   
+                    <a href="{% url 'stockmarket:add' %}" ><span class="glyphicon glyphicon-plus"></span> Add new Stock</a>
+                </button>
+            </li>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <li class="">
+                    <a href="{% url 'stockmarket:logout_user' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                    </a>
+                </li>
+            </ul>
+            {% else %}
+            <li class="">
+                    <a href="{% url 'stockmarket:login_user' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Login
+                    </a>
+                </li>
+            </ul>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</nav>
+{% block body %}
+{% endblock %}
+</body>

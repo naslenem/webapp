@@ -1,0 +1,75 @@
+{% extends 'stockmarket/base.html' %}
+{% block albums_active %}active{% endblock %}
+
+{% block body %}
+<div class="albums-container container-fluid">
+
+    <!-- Albums -->
+    <div class="row">
+        {% if albums %}
+            {% for album in albums %}
+                <div class="col-md-4 col-xl-4">
+                    <div class="thumbnail">
+                        <a href="{% url 'stockmarket:detail' album.id %}">
+                        </a>
+                        <div class="caption">
+                            <h2>{{ album.name }}</h2>
+                            <h4>({{ album.symbol }})</h4>
+
+                            <!-- View Details -->
+                            <a href="{% url 'stockmarket:detail' album.id %}" class="btn btn-info btn-sm" role="button">View Details</a>
+
+                            {% if user.is_authenticated %}
+                            <!-- Favorite Album -->
+                                <a href="{% url 'stockmarket:favorite' album.id %}" class="btn-favorite">
+
+                                {% if album.is_favorite %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </a>
+                                {% else %}                    	
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                         <table class="table table-sm table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Price</th>
+                                    <th>Difference</th>
+                                    <th>Day lowest</th>
+                                    <th>Day highest</th>
+                                    <!-- <th>P/E ratio</th> -->
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>{{ album.price }}</th>
+                                    <th>{{ album.point_q }}</th>
+                                    <th>{{ album.day_lowest }}</th>
+                                    <th>{{ album.day_highest }}</th>
+                                    <!-- <th>{{ album.p_e }}</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+            
+            <div class="col-sm-12">
+                <br>
+                <a href="{% url 'stockmarket:index' %}">
+                    <button type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add favorite stocks
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+        </div>
+
+
+</div>
+{% endblock %}
