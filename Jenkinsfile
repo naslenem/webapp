@@ -16,7 +16,12 @@ pipeline {
           }
           stage("Code coverage") {
                steps {
-                    sh "./test.sh"
+                    script {
+                    sh 'python3.7 manage.py test -v 2'
+                    step([$class: 'CoberturaPublisher', 
+                        coberturaReportFile: "cov.xml",
+                    ])
+                    junit "pyunit.xml"
                }
           }
     }
