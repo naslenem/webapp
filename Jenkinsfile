@@ -27,20 +27,7 @@ pipeline {
                }
 
     }
-          stage("Code coverage") {
-               steps {
-                    script {
-                    sh 'coverage run --data-file="cov.xml" manage.py test'
-                    publishHTML (target: [
-                    	reportDir: '.',
-                    	reportFiles: 'cov.xml',
-                    	reportName: "report"
-                    	])
-                    
 
-                    }
-               }
-          }
           stage("Docker build") {
           
           	steps {
